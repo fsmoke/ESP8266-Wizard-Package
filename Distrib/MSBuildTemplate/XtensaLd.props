@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <LibFolder>$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\lib</LibFolder>
+    <LdScriptFolder>$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\ld</LdScriptFolder>
+    <AdditionalAr></AdditionalAr>
+    <NoStdLib>true</NoStdLib>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(SelectRelease)'=='NON-OS'">
+    <AdditionalLib>c;gcc;hal;phy;pp;net80211;lwip;wpa;main;wps;crypto;json;upgrade;smartconfig;at;pwm;ssl;$(AdditionalLib)</AdditionalLib>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(SelectRelease)'=='ESPMesh'">
+    <AdditionalLib>c;gcc;hal;phy;pp;net80211;lwip;wpa;main;wps;crypto;json;upgrade;smartconfig;pwm;ssl;mesh;$(AdditionalLib)</AdditionalLib>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(SelectRelease)'=='RTOS'">
+    <AdditionalLib>cirom;gcc;hal;crypto;freertos;lwip;main;net80211;nopoll;phy;pp;smartconfig;ssl;wpa;minic;espconn;airkiss;ssc;spiffs;$(AdditionalLib)</AdditionalLib>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <XtensaLdItem>
+    </XtensaLdItem>
+  </ItemDefinitionGroup>
+</Project>

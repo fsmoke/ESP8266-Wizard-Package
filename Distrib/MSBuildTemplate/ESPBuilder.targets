@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--** Item Group ******************************************************************************************************************************-->
+  <ItemGroup>
+  </ItemGroup>
+
+  <!--** Task ************************************************************************************************************************************-->
+  <UsingTask Condition="'$(ESPBoot)'=='No Boot'" TaskName="ESPRAM" TaskFactory="XamlTaskFactory" AssemblyName="Microsoft.Build.Tasks.v4.0">
+    <Task>$(VisualStudioXtensa)MSBuildTemplate\ESPBuilder\ESPBuilder_Flash_Merged.xml</Task>
+  </UsingTask>
+
+  <UsingTask Condition="'$(ESPBoot)'!='No Boot'" TaskName="ESPRAM" TaskFactory="XamlTaskFactory" AssemblyName="Microsoft.Build.Tasks.v4.0">
+    <Task>$(VisualStudioXtensa)MSBuildTemplate\ESPBuilder\ESPBuilder_Boot_Merged.xml"</Task>
+  </UsingTask>
+
+ 
+  <!--** Targets *********************************************************************************************************************************-->
+  <!-- XtensaLd After[Build] Depends[SetXtensaVariable] -->
+  <Target Name="ESPBuilder" AfterTargets="Build" DependsOnTargets="">
+
+    <CreateItem Include="Nothing">
+      <Output ItemName="ESPBuilder" TaskParameter="Include"/>
+    </CreateItem>
+    
+    <ItemGroup>
+      <ESPBuilder>
+        <UserRam>512</UserRam>
+        <UserRam Condition="'$(SPISize)'>='2'">1024</UserRam>
+        <UserRam Condition="'$(SPISize)'>='5'">2048</UserRam>
+        
+        <BootName>new</BootName>
+        
+        <BootNum>0</BootNum>
+        <BootNum Condition="'$(ESPBoot)'!='No Boot'">2</BootNum>
+        
+        <SPIRam>512</SPIRam>
+        <SPIRam Condition="'$(SPISize)'=='2'">1024</SPIRam>
+        <SPIRam Condition="'$(SPISize)'=='3'">2048</SPIRam>
+        <SPIRam Condition="'$(SPISize)'=='4'">4096</SPIRam>
+        <SPIRam Condition="'$(SPISize)'=='5'">2048</SPIRam>
+        <SPIRam Condition="'$(SPISize)'=='6'">4096</SPIRam>
+        
+        <SPIRamName Condition="'$(SPISize)'=='0'">512K</SPIRamName>
+        <SPIRamName Condition="'$(SPISize)'=='2'">1M</SPIRamName>
+        <SPIRamName Condition="'$(SPISize)'=='3'">2M</SPIRamName>
+        <SPIRamName Condition="'$(SPISize)'=='4'">4M</SPIRamName>
+        <SPIRamName Condition="'$(SPISize)'=='5'">2M</SPIRamName>
+        <SPIRamName Condition="'$(SPISize)'=='6'">4M</SPIRamName>
+        
+        <UserAddr>0x01000</UserAddr>
+        <UserAddr Condition="'$(SPISize)'>='2' and '$(ESPBin)'=='2'">0x81000</UserAddr>
+        <UserAddr Condition="'$(SPISize)'>='5' and '$(ESPBin)'=='2'">0x101000</UserAddr>
+
+        <MasterKey>0x3E000</MasterKey>
+        <MasterKey Condition="'$(SPISize)'>='2' and '$(MasterIOT)'=='true'">0x7E000</MasterKey>
+        <MasterKey Condition="'$(SPISize)'>='5' and '$(MasterIOT)'=='true'">0xFE000</MasterKey>
+
+        <ESPData Condition="'$(SPISize)'=='0'">0x7C000</ESPData>
+        <ESPData Condition="'$(SPISize)'=='2'">0xFC000</ESPData>
+        <ESPData Condition="'$(SPISize)'=='3'">0x1FC000</ESPData>
+        <ESPData Condition="'$(SPISize)'>='4'">0x3FC000</ESPData>
+
+        <Blank Condition="'$(SPISize)'=='0'">0x7E000</Blank>
+        <Blank Condition="'$(SPISize)'=='2'">0xFE000</Blank>
+        <Blank Condition="'$(SPISize)'=='3'">0x1FE000</Blank>
+        <Blank Condition="'$(SPISize)'>='4'">0x3FE000</Blank>
+        
+        <SPISpeedName Condition="'$(SPISpeed)'=='0'">20M</SPISpeedName>
+        <SPISpeedName Condition="'$(SPISpeed)'=='1'">26M</SPISpeedName>
+        <SPISpeedName Condition="'$(SPISpeed)'=='2'">40M</SPISpeedName>
+        <SPISpeedName Condition="'$(SPISpeed)'=='15'">80M</SPISpeedName>
+       
+        <SPIModeName Condition="'$(SPIMode)'=='0'">QIO</SPIModeName>
+        <SPIModeName Condition="'$(SPIMode)'=='1'">QOUT</SPIModeName>
+        <SPIModeName Condition="'$(SPIMode)'=='2'">DIO</SPIModeName>
+        <SPIModeName Condition="'$(SPIMode)'=='3'">DOUT</SPIModeName>
+      </ESPBuilder>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="ESPRAM" AfterTargets="XtensaObjCopy" DependsOnTargets="SetPythonVariable">
+    <Exec Condition="'$(SelectRelease)'=='NON-OS' or '$(SelectRelease)'=='ESPMesh' " WorkingDirectory="$(MSBuildProjectDirectory)\$(OutputFolder)\Image\" Command="python &quot;$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\tools\gen_appbin.py&quot; $(MSBuildProjectName).eagle.app.v6.out %(ESPBuilder.BootNum) $(SPIMode) $(SPISpeed) $(SPISize) $(ESPBin)"/>
+    <Exec Condition="'$(SelectRelease)'=='RTOS'" WorkingDirectory="$(MSBuildProjectDirectory)\$(OutputFolder)\Image\" Command="python &quot;$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\tools\gen_appbin.py&quot; $(MSBuildProjectName).eagle.app.v6.out %(ESPBuilder.BootNum) $(SPIMode) $(SPISpeed) $(SPISize)"/>
+
+    <Message Condition="'$(ESPBoot)'=='No Boot'" Importance="High" Text="Generate : $(MSBuildProjectDirectory)\$(OutputFolder)\$(MSBuildProjectName).eagle.flash(0x00000).bin..." />
+    <Move Condition="'$(ESPBoot)'=='No Boot'"
+       SourceFiles="$(MSBuildProjectDirectory)\$(OutputFolder)\Image\eagle.app.flash.bin"
+       DestinationFiles="$(MSBuildProjectDirectory)\$(OutputFolder)\$(MSBuildProjectName).eagle.flash(0x00000).bin"
+    />
+
+    <Message Condition="'$(ESPBoot)'=='No Boot' and $(SelectVersion.Substring(0, $(SelectVersion.IndexOf('.'))))&lt;2" Importance="High" Text="Generate : $(MSBuildProjectDirectory)\$(OutputFolder)\$(MSBuildProjectName).eagle.irom0text.bin(0x40000).bin..." />
+	<Message Condition="'$(ESPBoot)'=='No Boot' and $(SelectVersion.Substring(0, $(SelectVersion.IndexOf('.'))))&gt;=2" Importance="High" Text="Generate : $(MSBuildProjectDirectory)\$(OutputFolder)\$(MSBuildProjectName).eagle.irom0text.bin(0x10000).bin..." />
+    
+	<Move Condition="'$(ESPBoot)'=='No Boot' and $(SelectVersion.Substring(0, $(SelectVersion.IndexOf('.'))))&lt;2"
+       SourceFiles="$(MSBuildProjectDirectory)\$(OutputFolder)\Image\eagle.app.v6.irom0text.bin"
+       DestinationFiles="$(MSBuildProjectDirectory)\$(OutputFolder)\$(MSBuildProjectName).eagle.irom0text.bin(0x40000).bin"
+    />
+	
+	<Move Condition="'$(ESPBoot)'=='No Boot' and $(SelectVersion.Substring(0, $(SelectVersion.IndexOf('.'))))&gt;=2"
+       SourceFiles="$(MSBuildProjectDirectory)\$(OutputFolder)\Image\eagle.app.v6.irom0text.bin"
+       DestinationFiles="$(MSBuildProjectDirectory)\$(OutputFolder)\$(MSBuildProjectName).eagle.irom0text.bin(0x10000).bin"
+    />
+
+    <Message Condition="'$(ESPBoot)'!='No Boot'" Importance="High" Text="Generate : $(MSBuildProjectDirectory)\$(OutputFolder)\$(MSBuildProjectName).user$(ESPBin).%(ESPBuilder.SPIRam).%(ESPBuilder.BootName).$(SPISize)(%(ESPBuilder.UserAddr)).bin..." />
+    <Move Condition="'$(ESPBoot)'!='No Boot'"
+       SourceFiles="$(MSBuildProjectDirectory)\$(OutputFolder)\Image\eagle.app.flash.bin"
+       DestinationFiles="$(MSBuildProjectDirectory)\$(OutputFolder)\$(MSBuildProjectName).user$(ESPBin).%(ESPBuilder.SPIRam).%(ESPBuilder.BootName).$(SPISize)(%(ESPBuilder.UserAddr)).bin"
+    />
+  </Target>
+
+  <Target Name="ESPTOOL" AfterTargets="ESPRAM" DependsOnTargets="SetPythonVariable">
+    <Message Importance="High" Text="*** Flash Table **************************************" />
+    <Message Condition="'$(FlashMaster)'=='true'" Importance="High" Text="Master Device Key adresss : %(ESPBuilder.MasterKey)" />
+    <Message Condition="'$(FlashESPData)'=='true'" Importance="High" Text="ESP Init Data adresss     : %(ESPBuilder.ESPData)" />
+    <Message Condition="'$(FlashBlank)'=='true'" Importance="High" Text="Blank Data adresss        : %(ESPBuilder.Blank)" />
+    <Message Condition="'$(ESPBoot)'=='No Boot' and '$(FlashBoot)'=='true'" Importance="High" Text="eagle.flash adresss       : 0x00000" />
+    <Message Condition="'$(ESPBoot)'=='No Boot' and $(SelectVersion.Substring(0, $(SelectVersion.IndexOf('.'))))&lt;2 and '$(FlashUser)'=='true'" Importance="High" Text="eagle.irom0text address   : 0x40000" />
+	<Message Condition="'$(ESPBoot)'=='No Boot' and $(SelectVersion.Substring(0, $(SelectVersion.IndexOf('.'))))&gt;=2 and '$(FlashUser)'=='true'" Importance="High" Text="eagle.irom0text address   : 0x10000" />
+	
+    <Message Condition="'$(ESPBoot)'!='No Boot' and '$(FlashBoot)'=='true'" Importance="High" Text="boot adresss              : 0x00000" />
+    <Message Condition="'$(ESPBoot)'!='No Boot' and '$(FlashUser)'=='true'" Importance="High" Text="User$(ESPBin) address             : %(ESPBuilder.UserAddr)" />
+  
+    <PropertyGroup>
+      <ESPToolBaseParam>-p$(ComPort) -b$(ComSpeed) -r$(ESPToolReset) -q -ff%(ESPBuilder.SPISpeedName) -fm%(ESPBuilder.SPIModeName) -fs%(ESPBuilder.SPIRamName)</ESPToolBaseParam>
+      <ESPToolChipIDParam>-p$(ComPort) -b$(ComSpeed) -r$(ESPToolReset) -of</ESPToolChipIDParam>
+      <AdresseList></AdresseList>
+      <AdresseList Condition="'$(FlashMaster)'=='true'">$([System.String]::Concat($(AdresseList), "-a%(ESPBuilder.MasterKey) &quot;$(MSBuildProjectDirectory)\master_device_key.bin&quot; "))</AdresseList>
+      
+      <AdresseList Condition="'$(FlashESPData)'=='true' and '$(ESPDataLocal)'!='true'">$([System.String]::Concat($(AdresseList), "-a%(ESPBuilder.ESPData) &quot;$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\bin\esp_init_data_default.bin&quot; "))</AdresseList>
+      <AdresseList Condition="'$(FlashESPData)'=='true' and '$(ESPDataLocal)'=='true'">$([System.String]::Concat($(AdresseList), "-a%(ESPBuilder.ESPData) &quot;$(MSBuildProjectDirectory)\esp_init_data_default.bin&quot; "))</AdresseList>
+      
+      <AdresseList Condition="'$(FlashBlank)'=='true'">$([System.String]::Concat($(AdresseList), "-a%(ESPBuilder.Blank) &quot;$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\bin\blank.bin&quot; "))</AdresseList>
+
+      <AdresseList Condition="'$(FlashBoot)'=='true' and '$(ESPBoot)'=='No Boot'">$([System.String]::Concat($(AdresseList), "-a0x00000 &quot;$(MSBuildProjectDirectory)\$(OutputFolder)\$(MSBuildProjectName).eagle.flash(0x00000).bin&quot; "))</AdresseList>
+      <AdresseList Condition="'$(FlashBoot)'=='true' and '$(ESPBoot)'!='No Boot'">$([System.String]::Concat($(AdresseList), "-a0x00000 &quot;$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\bin\$(ESPBoot).bin&quot; "))</AdresseList>
+      
+      <AdresseList Condition="'$(FlashUser)'=='true' and '$(ESPBoot)'=='No Boot' and $(SelectVersion.Substring(0, $(SelectVersion.IndexOf('.'))))&lt;2">$([System.String]::Concat($(AdresseList), "-a0x40000 &quot;$(MSBuildProjectDirectory)\$(OutputFolder)\$(MSBuildProjectName).eagle.irom0text.bin(0x40000).bin&quot; "))</AdresseList>
+	  <AdresseList Condition="'$(FlashUser)'=='true' and '$(ESPBoot)'=='No Boot' and $(SelectVersion.Substring(0, $(SelectVersion.IndexOf('.'))))&gt;=2">$([System.String]::Concat($(AdresseList), "-a0x10000 &quot;$(MSBuildProjectDirectory)\$(OutputFolder)\$(MSBuildProjectName).eagle.irom0text.bin(0x10000).bin&quot; "))</AdresseList>
+	  
+      <AdresseList Condition="'$(FlashUser)'=='true' and '$(ESPBoot)'!='No Boot'">$([System.String]::Concat($(AdresseList), "-a%(ESPBuilder.UserAddr) &quot;$(MSBuildProjectDirectory)\$(OutputFolder)\$(MSBuildProjectName).user$(ESPBin).%(ESPBuilder.SPIRam).%(ESPBuilder.BootName).$(SPISize)(%(ESPBuilder.UserAddr)).bin&quot; "))</AdresseList>
+    </PropertyGroup>
+                
+    <Message Importance="High" Text="*** Flash Info **************************************" />
+    <Exec Command="esp_tool $(ESPToolChipIDParam) > &quot;$(MSBuildProjectDirectory)\ConsoleOutput.dbg&quot;" Condition="'$(AdresseList)'!=''"/>
+    <ReadLinesFromFile File="$(MSBuildProjectDirectory)\ConsoleOutput.dbg">
+      <Output ItemName="_FileContents" TaskParameter="Lines"/>
+    </ReadLinesFromFile>
+
+    <PropertyGroup>
+      <ChipReady>True</ChipReady>
+      <ChipReady Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(_FileContents.Identity)', 'connection attempt failed'))">False</ChipReady>
+    </PropertyGroup>
+    <Message Text="%(_FileContents.Identity)" Importance="High"/>
+    <Delete Files="$(MSBuildProjectDirectory)\ConsoleOutput.dbg"/>
+    <Warning Condition="'$(ChipReady)'=='False'" File="Flash Stop..." Text="Flash tool seem to not respond, verify cable and power supply."/>
+    
+    <Message Condition="'$(AdresseList)'==''" Importance="High" Text="All Flash Parameter is Off. No use to flash." />
+    <Message Condition="'$(AdresseList)'!='' and '$(ChipReady)'=='True'" Importance="High" Text="Flashing...." />
+    <Exec Condition="'$(AdresseList)'!='' and '$(ChipReady)'=='True'" Command="esp_tool $(ESPToolBaseParam) $(AdresseList)"/>
+  </Target>
+
+  <Target Name="XtensaESPError">
+    <FileUpdate Files="$(MSBuildProjectDirectory)\ConsoleOutput.dbg" Regex=":(\d+):(\d+):" ReplacementText="($1,$2):"/>
+    <ReadLinesFromFile File="$(MSBuildProjectDirectory)\ConsoleOutput.dbg">
+      <Output ItemName="_FileContents" TaskParameter="Lines"/>
+    </ReadLinesFromFile>
+
+    <Message Text="%(_FileContents.Identity)" Importance="High"/>
+    <Delete Files="$(MSBuildProjectDirectory)\ConsoleOutput.dbg"/>
+  </Target>
+  
+  <!-- SetXtensaVariable -->
+  <Target Name="SetPythonVariable">
+    <SetEnv Name="PATH" Value="$(VisualStudioXtensa)Python27;$(VisualStudioXtensa)Xtensa106\bin;$(VisualStudioXtensa);" Prefix="false" >
+      <Output TaskParameter="OutputEnvironmentVariable" PropertyName="PATH"/>
+    </SetEnv>
+    <SetEnv Name="COMPILE" Value="gcc" Prefix="false" >
+      <Output TaskParameter="OutputEnvironmentVariable" PropertyName="COMPILE"/>
+    </SetEnv>
+  </Target>
+  
+  <Target Name="EspBuilderClean" AfterTargets="Clean">
+    <ItemGroup>
+      <FileToDel Include="$(MSBuildProjectDirectory)\$(OutputFolder)\*.bin"/>
+    </ItemGroup>
+    
+    <Delete Files="@(FileToDel)" />
+  </Target>
+</Project>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--** Item Group ******************************************************************************************************************************-->
+  <ItemGroup>
+    <PropertyPageSchema Include="$(VisualStudioXtensa)MSBuildTemplate\XtensaAr\XtensaAr.xml" />
+  </ItemGroup>
+
+  <!--** Task ************************************************************************************************************************************-->
+  <UsingTask TaskName="SetEnv" AssemblyFile="$(VCTargetsPath)Microsoft.Build.CppTasks.Common.dll"/>
+  
+  <UsingTask TaskName="XtensaAr" TaskFactory="XamlTaskFactory" AssemblyName="Microsoft.Build.Tasks.v4.0">
+    <Task>$(VisualStudioXtensa)MSBuildTemplate\XtensaAr\XtensaAr.xml</Task>
+  </UsingTask>
+
+  <!--** Targets *********************************************************************************************************************************-->
+  <!-- XtensaAr After[Build] Depends[SetXtensaVariable] -->
+  <Target Name="XtensaAr" AfterTargets="XtensaGcc" DependsOnTargets="SetXtensaVariable;XtensaLibPrepareFolder;XtensaArCreateItem" Outputs="%(Identity).a" Inputs="@(XtensaArItem)">
+    
+    <ItemGroup Condition="'@(SelectedFiles)' != ''">
+      <XtensaAr Remove="@(XtensaCppItem)" Condition="'%(Identity)' != '@(SelectedFiles)'" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <XtensaObjItem Include="$(MSBuildProjectDirectory)\$(OutputFolder)\Obj\%(XtensaArItem.Identity)\*.o"/>
+    </ItemGroup>
+    
+    <Message Importance="High" Text="%(XtensaArItem.ExecutionDescription)" />
+    <XtensaAr
+      AddARFile="$(AddARFile)"
+      Outputs="$(MSBuildProjectDirectory)\$(OutputFolder)\Lib\Lib%(XtensaArItem.Identity).a"
+      Inputs="@(XtensaObjItem)"
+      AdditionalOptions="$(AdditionalOptions)"
+	    CommandLineTemplate="%(XtensaArItem.CommandLineTemplate)" 
+    />
+
+    <Delete Files="$(MSBuildProjectDirectory)\ConsoleOutput.dbg"/>
+    <OnError ExecuteTargets="XtensaArError"/>
+  </Target>
+
+  <Target Name="XtensaArError">
+    <FileUpdate Files="$(MSBuildProjectDirectory)\ConsoleOutput.dbg" Regex=":(\d+):(\d+):" ReplacementText="($1,$2):"/>
+    <FileUpdate Files="$(MSBuildProjectDirectory)\ConsoleOutput.dbg" Regex=":(\d+):" ReplacementText="($1):"/>
+    <ReadLinesFromFile File="$(MSBuildProjectDirectory)\ConsoleOutput.dbg">
+      <Output ItemName="_FileContents" TaskParameter="Lines"/>
+    </ReadLinesFromFile>
+
+    <Message Text="%(_FileContents.Identity)" Importance="High"/>
+    <Delete Files="$(MSBuildProjectDirectory)\ConsoleOutput.dbg"/>
+  </Target>
+
+  <!-- SetXtensaVariable -->
+  <Target Name="SetXtensaVariable">
+    <SetEnv Name="PATH" Value="$(VisualStudioXtensa)Xtensa106\Bin" Prefix="false" >
+      <Output TaskParameter="OutputEnvironmentVariable" PropertyName="PATH"/>
+    </SetEnv> 
+  </Target>
+ 
+  <!-- XtensaArCreateItem -->
+  <Target Name="XtensaArCreateItem">
+    <CreateItem Include="@(XtensaCppItem->RelativeDir()->Distinct()->Replace('\', ''))">
+      <Output ItemName="XtensaArItem" TaskParameter="Include"/>
+    </CreateItem>   
+  
+    <ItemGroup>
+      <XtensaArItem>
+        <CommandLineTemplate>xtensa-lx106-elf-ar [AddARFile] [Outputs] [Inputs] 2> &quot;$(MSBuildProjectDirectory)\ConsoleOutput.dbg&quot;</CommandLineTemplate>
+        <ExecutionDescription>Archive [%(RelativeDir)%(FileName).a] Static Library...</ExecutionDescription>
+      </XtensaArItem>
+    </ItemGroup>
+  </Target>
+  
+  <!-- XtensaLibPrepareFolder -->
+  <Target Name="XtensaLibPrepareFolder">
+    <MakeDir Directories="$(MSBuildProjectDirectory)\$(OutputFolder)\Lib\" />
+  </Target>
+  
+  <!-- XtensaClean -->
+  <Target Name="XtensaArClean" AfterTargets="Clean">
+    <RemoveDir Directories="$(MSBuildProjectDirectory)\$(OutputFolder)\Lib" />
+  </Target>
+
+</Project>

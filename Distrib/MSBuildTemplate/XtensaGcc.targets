@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--** Item Group ******************************************************************************************************************************-->
+  <ItemGroup>
+    <PropertyPageSchema Include="$(VisualStudioXtensa)MSBuildTemplate\XtensaGcc\XtensaGcc.xml" />
+    <AvailableItemName Include="XtensaCppItem">
+      <Targets>XtensaGcc</Targets>
+    </AvailableItemName>
+  </ItemGroup>
+
+  <!--** Task ************************************************************************************************************************************-->
+  <UsingTask TaskName="SetEnv" AssemblyFile="$(VCTargetsPath)Microsoft.Build.CppTasks.Common.dll"/>
+  <UsingTask TaskName="MSBuild.Community.Tasks.FileUpdate" AssemblyFile="$(VisualStudioXtensa)MSBuild.Community.Tasks.dll" />
+
+  <UsingTask TaskName="XtensaGcc" TaskFactory="XamlTaskFactory" AssemblyName="Microsoft.Build.Tasks.v4.0">
+    <Task>$(VisualStudioXtensa)MSBuildTemplate\XtensaGcc\XtensaGcc.xml</Task>
+  </UsingTask>
+
+  <!--** Targets *********************************************************************************************************************************-->
+  <!-- XtensaGcc After[Build] Depends[SetXtensaVariable] -->
+  <Target Name="XtensaGcc" AfterTargets="ESPBuilder" DependsOnTargets="SetXtensaVariable;XtensaGccPrepareFolder" 
+          Outputs="%(Filename).o" Inputs="%(XtensaCppItem.Identity);%(XtensaCppItem.AdditionalDependencies);$(MSBuildProjectFile)">
+
+    
+    <Error Condition="!Exists('$(VisualStudioXtensa)ESPressif')" File="Build Stop..." Text="XtensaTools\ESPressif folder missing, repair or reinstall your package."/>
+    <Error Condition="!Exists('$(VisualStudioXtensa)ESPressif\$(SelectRelease)')" File="Build Stop..." Text="Release [$(SelectRelease)] missing, Reselect propers SDK Release inside property."/>
+    <Error Condition="!Exists('$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)')" File="Build Stop..." Text="Version [$(SelectVersion)] missing, Reselect propers SDK Version inside property."/>
+    <Error Condition="!Exists('$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\ld\eagle.rom.addr.v6.ld')" File="Build Stop..." Text="ESP LD Script Folder seem missing, repair or reinstall your package."/>
+    <Error Condition="!Exists('$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\lib\libmain.a')" File="Build Stop..." Text="ESP LIB Folder seem missing, repair or reinstall your package."/>
+    <Error Condition="!Exists('$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\bin\$(ESPBoot).bin') and '$(ESPBoot)'!='No Boot'" File="Build Stop..." Text="[$(ESPBoot).bin] seem missing, Reselect propers ESP Boot Mode inside property."/>
+    <Error Condition="!Exists('$(MSBuildProjectDirectory)\esp_init_data_default.bin') and '$(FlashESPData)'=='true' and '$(ESPDataLocal)'=='true'" File="Build Stop..." Text="[esp_init_data_default.bin] seem missing inside your project folder, please add."/>
+
+    <!--ItemGroup>
+      <XtensaCppItem>
+        <RebuildInclude>@(XtensaHItem->DirectoryName()->Distinct());$(IncludeFolder)</RebuildInclude>
+      </XtensaCppItem>
+    </ItemGroup-->
+ 
+    <Message Condition="'%(XtensaCppItem.BuildDepend)' == 'true'" Importance="High" Text="%(XtensaCppItem.StaticExecutionDescription)" />
+    <Message Condition="'%(XtensaCppItem.BuildDepend)' != 'true'" Importance="High" Text="%(XtensaCppItem.ExecutionDescription)" />
+    <XtensaGcc Condition="'%(XtensaCppItem.BuildDepend)' == 'true'" Inputs="%(XtensaCppItem.Inputs)"
+	    BuildDepend="%(XtensaCppItem.BuildDepend)"
+	    IncludePath="$(IncludePath)"
+	    Optimization="%(XtensaCppItem.Optimization)"
+	    Debugformat="%(XtensaCppItem.Debugformat)"
+	    PtrArimetic="%(XtensaCppItem.PtrArimetic)"
+	    UndefMacro="%(XtensaCppItem.UndefMacro)"
+	    WarAsErr="%(XtensaCppItem.WarAsErr)"
+	    NoInline="%(XtensaCppItem.NoInline)"
+	    NoStdLib="%(XtensaCppItem.NoStdLib)"
+	    LongCall="%(XtensaCppItem.LongCall)"
+	    TextLit="%(XtensaCppItem.TextLit)"
+	    FunctionSection="%(XtensaCppItem.FunctionSection)"
+	    DataSection="%(XtensaCppItem.DataSection)"
+	    AdditionalOptions="%(XtensaCppItem.AdditionalOptions)"
+      AdditionalDefine="%(XtensaCppItem.AdditionalDefine)"
+      CommandLineTemplate="%(XtensaCppItem.CommandLineTemplate)"
+      />
+
+    <XtensaGcc Inputs="%(XtensaCppItem.Inputs)"
+	    IncludePath="$(IncludePath)"
+	    Optimization="%(XtensaCppItem.Optimization)"
+	    Debugformat="%(XtensaCppItem.Debugformat)"
+	    PtrArimetic="%(XtensaCppItem.PtrArimetic)"
+	    UndefMacro="%(XtensaCppItem.UndefMacro)"
+	    WarAsErr="%(XtensaCppItem.WarAsErr)"
+	    NoInline="%(XtensaCppItem.NoInline)"
+	    NoStdLib="%(XtensaCppItem.NoStdLib)"
+	    LongCall="%(XtensaCppItem.LongCall)"
+	    TextLit="%(XtensaCppItem.TextLit)"
+	    FunctionSection="%(XtensaCppItem.FunctionSection)"
+	    DataSection="%(XtensaCppItem.DataSection)"
+	    AdditionalOptions="%(XtensaCppItem.AdditionalOptions)"
+      AdditionalDefine="%(XtensaCppItem.AdditionalDefine)"
+      CommandLineTemplate="%(XtensaCppItem.CommandLineTemplate)"
+    />
+
+    <Delete Files="$(MSBuildProjectDirectory)\ConsoleOutput.dbg"/>
+    <OnError ExecuteTargets="XtensaGccError"/>  
+  </Target>
+
+  <Target Name="XtensaGccError">
+    <FileUpdate Files="$(MSBuildProjectDirectory)\ConsoleOutput.dbg" Regex=":(\d+):(\d+):" ReplacementText="($1,$2):"/>
+    <FileUpdate Files="$(MSBuildProjectDirectory)\ConsoleOutput.dbg" Regex=":(\d+):" ReplacementText="($1):"/>
+    <ReadLinesFromFile File="$(MSBuildProjectDirectory)\ConsoleOutput.dbg">
+      <Output ItemName="_FileContents" TaskParameter="Lines"/>
+    </ReadLinesFromFile>
+    
+    <Message Text="%(_FileContents.Identity)" Importance="High"/>
+    <Delete Files="$(MSBuildProjectDirectory)\ConsoleOutput.dbg"/>
+  </Target>
+
+  <!-- SetXtensaVariable -->
+  <Target Name="SetXtensaVariable">
+    <SetEnv Name="PATH" Value="$(VisualStudioXtensa)Xtensa106\Bin" Prefix="false" >
+      <Output TaskParameter="OutputEnvironmentVariable" PropertyName="PATH"/>
+    </SetEnv> 
+  </Target>
+  
+  <!-- XtensaPrepareFolder -->
+  <Target Name="XtensaGccPrepareFolder">
+    <MakeDir Directories="$(MSBuildProjectDirectory)\$(OutputFolder)\Obj\%(XtensaCppItem.RelativeDir)" />
+  </Target>
+
+  <!-- XtensaClean -->
+  <Target Name="XtensaGccClean" AfterTargets="Clean">
+    <RemoveDir Directories="$(MSBuildProjectDirectory)\$(OutputFolder)\Obj" />
+  </Target>
+  
+</Project>

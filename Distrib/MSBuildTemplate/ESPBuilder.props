@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ESPBoot>No Boot</ESPBoot>
+    <SPISpeed>2</SPISpeed>
+    <SPIMode>2</SPIMode>
+    <ComPort>COM1</ComPort>
+    <ComSpeed>115200</ComSpeed>
+    <ESPToolReset>auto</ESPToolReset>
+    <MasterIOT>false</MasterIOT>
+    <ESPDataLocal>false</ESPDataLocal>
+    <FlashMaster>false</FlashMaster>
+    <FlashESPData>true</FlashESPData>
+    <FlashBlank>true</FlashBlank>
+    <FlashBoot>true</FlashBoot>
+    <FlashUser>true</FlashUser>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <BootList Include="No boot"/>
+    <BootList Condition="Exists('$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)')" Include="$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\bin\Boot*.bin" />
+    <BootName Include="@(BootList->'%(filename)')"/>
+  </ItemGroup>
+
+  <ItemDefinitionGroup>
+    <ESPBuilder>
+    </ESPBuilder>
+  </ItemDefinitionGroup>  
+</Project>

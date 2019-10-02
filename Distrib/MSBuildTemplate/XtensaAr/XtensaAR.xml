@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ProjectSchemaDefinitions xmlns="http://schemas.microsoft.com/build/2009/properties" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <Rule Name="XtensaAr"
+        DisplayName="Xtensa AR"
+        PageTemplate="tool"
+	      SwitchPrefix=""
+        Description="Xtensa Archiver property sheet" Order="400"
+        xmlns="http://schemas.microsoft.com/build/2009/properties">
+    
+    <Rule.Categories>
+      <Category Name="General" DisplayName="General" />
+      <Category Name="CMDLine" DisplayName="Command Line" Subtype="CommandLine"/>
+    </Rule.Categories>
+    
+    <Rule.DataSource>
+      <DataSource Persistence="ProjectFile" />
+    </Rule.DataSource>
+
+    <!-- Rule Inputs, CommandLine UI Variables -->
+    <StringListProperty Name="Inputs" Category="CMDLine" IsRequired="true" Visible="False" Subtype="File" Separator=" "/>
+    <StringProperty Name="Outputs" Category="CMDLine" Visible="False" Subtype="File"/>
+    <StringProperty Subtype="AdditionalOptions" Name="AdditionalOptions" DisplayName="Additional Options" Category="CMDLine"/>
+    <StringProperty Name="CommandLineTemplate" DisplayName="Command Line" Visible="False" IncludeInCommandLine="False" />
+    <StringProperty Name="ExecutionDescription" DisplayName="Execution Description" IncludeInCommandLine="False" Visible="False" />
+    
+    <!-- Common -->
+    <EnumProperty Name="AddARFile" DisplayName="Insert file Parameter" Description="Replace existing or insert new file(s) into the archive" Category="General">
+        <EnumValue Name="ArAddR" DisplayName="Replace existing or insert new file(s) into the archive" Switch="r"/>
+        <EnumValue Name="ArAddRa" DisplayName="Put file(s) after [member-name]" Switch="ra"/>
+        <EnumValue Name="ArAddRb" DisplayName="Put file(s) before [member-name] (same as [i])" Switch="rb"/>
+        <EnumValue Name="ArAddRf" DisplayName="Truncate inserted file names" Switch="rf"/>
+        <EnumValue Name="ArAddRu" DisplayName="Only replace files that are newer" Switch="ru"/>
+    </EnumProperty>
+  </Rule>
+</ProjectSchemaDefinitions>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ProjectSchemaDefinitions xmlns="http://schemas.microsoft.com/build/2009/properties" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <Rule Name="XtensaGcc"
+        DisplayName="Xtensa C/C++"
+        PageTemplate="tool"
+	      SwitchPrefix=""
+        Description="Xtensa Compiler property sheet" Order="300"
+        xmlns="http://schemas.microsoft.com/build/2009/properties">
+    
+    <Rule.Categories>
+      <Category Name="General" DisplayName="Common" />
+      <Category Name="Debug" DisplayName="Debug" />
+      <Category Name="Optimizer" DisplayName="Optimizer" />
+      <Category Name="Target" DisplayName="Target" />
+      <Category Name="Warnings" DisplayName="Warnings" />
+      <Category Name="CMDLine" DisplayName="Command Line" Subtype="CommandLine"/>
+    </Rule.Categories>
+    
+    <Rule.DataSource>
+      <DataSource Persistence="ProjectFile" ItemType="XtensaCppItem"/>
+    </Rule.DataSource>
+
+    <!-- Rule Inputs, CommandLine UI Variables -->
+    <StringProperty Name="Inputs" Category="CMDLine" IsRequired="true">
+      <StringProperty.DataSource>
+        <DataSource Persistence="ProjectFile" ItemType="XtensaCppItem" SourceType="Item" />
+      </StringProperty.DataSource>
+    </StringProperty>
+    <StringProperty Name="CommandLineTemplate" DisplayName="Command Line" Visible="False" IncludeInCommandLine="False" />
+    <StringProperty Name="ExecutionDescription" DisplayName="Execution Description" IncludeInCommandLine="False" Visible="False" />
+    <StringProperty Subtype="AdditionalOptions" Name="AdditionalOptions" DisplayName="Additional Options" Category="CMDLine"/>
+    
+    <!-- Common -->
+    <StringListProperty Name="IncludePath" DisplayName="Include Folder" Description="Additional include folder" Category="General" Switch="-I" Subtype="Folder">
+      <StringListProperty.DataSource>
+        <DataSource Persistence="ProjectFile"/>
+      </StringListProperty.DataSource>
+    </StringListProperty>
+    
+    <BoolProperty Name="FunctionSection" DisplayName="Function Section" Description="Place each function into its own section" Category="General" Switch="-ffunction-sections"/>  
+    <BoolProperty Name="DataSection" DisplayName="Data Section" Description="Place data items into their own section" Category="General" Switch="-fdata-sections"/>
+    <BoolProperty Name="BuildDepend" DisplayName="Build Dependency" Description="Build dependency before compile the file" Category="General" Switch="-M"/>
+    <StringListProperty Name="AdditionalDefine" DisplayName="Additional Define" Category="General" Switch="-D"/>
+    
+    <!-- Optimization -->
+    <EnumProperty Name="Optimization" DisplayName="Optimization" Description="Select code optimization" Category="Optimizer">
+        <EnumValue Name="OptSpeed" DisplayName="Optimize for speed disregarding exact standards compliance" Switch="-Ofast"/>
+        <EnumValue Name="OptDebug" DisplayName="Optimize for debugging experience rather than speed or size" Switch="-Og"/>
+        <EnumValue Name="OptSize" DisplayName="Optimize for space rather than speed" Switch="-Os"/>
+    </EnumProperty>
+    <BoolProperty Name="NoInline" DisplayName="No Inline Function" Description="No Inline Function" Category="Optimizer" Switch="-fno-inline-functions"/>
+    <BoolProperty Name="NoStdLib" DisplayName="No Standard Library" Description="No Standard Library" Category="Optimizer" Switch="-nostdlib"/>
+
+    <!-- Target -->
+    <BoolProperty Name="LongCall" DisplayName="Indirect CALLXn for large" Description="Use indirect CALLXn instructions for large programs" Category="Target" Switch="-mlongcalls"/>  
+    <BoolProperty Name="TextLit" DisplayName="Text Section Literals" Description="Intersperse literal pools with code in the text section" Category="Target" Switch="-mtext-section-literals"/>  
+
+    <!-- Warnings -->
+    <BoolProperty Name="PtrArimetic" DisplayName="Pointer aritmetic" Description="Warn about function pointer arithmetic" Category="Warnings" Switch="-Wpointer-arith"/>  
+    <BoolProperty Name="UndefMacro" DisplayName="Undefined macro" Description="Warn if an undefined macro is used in an #if directive" Category="Warnings" Switch="-Wundef"/>  
+    <BoolProperty Name="WarAsErr" DisplayName="Warnings as error" Description="Treat all warnings as errors" Category="Warnings" Switch="-Werror"/>  
+
+    <!-- Debug -->
+    <EnumProperty Name="Debugformat" DisplayName="Debug Format" Description="Select code optimization" Category="Debug">
+        <EnumValue Name="DbgDefFor" DisplayName="Generate debug information in default format" Switch="-g"/>
+        <EnumValue Name="DbgCoffFor" DisplayName="Generate debug information in COFF format" Switch="-gcoff"/>
+        <EnumValue Name="DbgDwarfFor" DisplayName="Generate debug information in DWARF v2 (or later) format" Switch="-gdwarf-"/>
+        <EnumValue Name="DbgExtendFor" DisplayName="Generate debug information in default extended format" Switch="-ggdb"/>
+    </EnumProperty>
+
+  </Rule>
+  <ItemType Name="XtensaCppItem" DisplayName="C/C++ compiler"/>
+  <ItemType Name="XtensaHItem" DisplayName="C/C++ header"/>
+  <ItemType Name="TextItem" DisplayName="Text"/>
+
+  <FileExtension Name="*.cpp" ContentType="XtensaCppContent"/>
+  <FileExtension Name="*.c" ContentType="XtensaCppContent"/>
+  <FileExtension Name="*.h" ContentType="XtensaHContent"/>
+  <FileExtension Name="*.txt" ContentType="TextContent"/>
+
+  <ContentType Name="XtensaCppContent" DisplayName="Xtensa C/C++ code" ItemType="XtensaCppItem"/>
+  <ContentType Name="XtensaHContent" DisplayName="Xtensa C/C++ header" ItemType="XtensaHItem"/>
+  <ContentType Name="TextContent" DisplayName="Text" ItemType="TextItem" />
+</ProjectSchemaDefinitions>

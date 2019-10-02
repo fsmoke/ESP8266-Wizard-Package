@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--** Item Group ******************************************************************************************************************************-->
+  <ItemGroup>
+    <PropertyPageSchema Include="$(VisualStudioXtensa)MSBuildTemplate\XtensaObjCopy\XtensaObjCopy.xml" />
+  </ItemGroup>
+
+  <!--** Task ************************************************************************************************************************************-->
+  <UsingTask TaskName="SetEnv" AssemblyFile="$(VCTargetsPath)Microsoft.Build.CppTasks.Common.dll"/>
+  
+  <UsingTask TaskName="XtensaObjCopy" TaskFactory="XamlTaskFactory" AssemblyName="Microsoft.Build.Tasks.v4.0">
+    <Task>$(VisualStudioXtensa)MSBuildTemplate\XtensaObjCopy\XtensaObjCopy.xml</Task>
+  </UsingTask>
+
+  <!--** Targets *********************************************************************************************************************************-->
+  <!-- XtensaAr After[Build] Depends[SetXtensaVariable] -->
+  <Target Name="XtensaObjCopy" AfterTargets="XtensaLd" DependsOnTargets="SetXtensaVariable">
+
+    <CreateItem Include="Nothing">
+      <Output ItemName="XtensaObjCopyItem" TaskParameter="Include"/>
+    </CreateItem>
+
+    <ItemGroup>
+      <XtensaObjCopyItem>
+        <CommandLineTemplate>xtensa-lx106-elf-objcopy --only-section [DumpText][DumpData][Dumprodata][Dumpirom] -O binary &quot;$(MSBuildProjectDirectory)\$(OutputFolder)\Image\$(MSBuildProjectName).eagle.app.v6.out&quot; &quot;$(MSBuildProjectDirectory)\$(OutputFolder)\Image\eagle.app.v6[DumpText][DumpData][Dumprodata][DumpiromName].bin&quot; 2> &quot;$(MSBuildProjectDirectory)\ConsoleOutput.dbg&quot;</CommandLineTemplate>
+      </XtensaObjCopyItem>
+    </ItemGroup>
+
+    <Message Condition="'$(DumpText)'=='true'" Importance="High" Text="Object Copy -> export .text section..." />
+    <XtensaObjCopy Condition="'$(DumpText)'=='true'"
+      DumpText="$(DumpText)"
+	    CommandLineTemplate="%(XtensaObjCopyItem.CommandLineTemplate)" 
+    />
+  
+    <Message Condition="'$(DumpData)'=='true'" Importance="High" Text="Object Copy -> export .data section..." />
+    <XtensaObjCopy Condition="'$(DumpData)'=='true'"
+      DumpData="$(DumpData)"
+	    CommandLineTemplate="%(XtensaObjCopyItem.CommandLineTemplate)" 
+    />
+  
+    <Message Condition="'$(Dumprodata)'=='true'" Importance="High" Text="Object Copy -> export .rodata section..." />
+    <XtensaObjCopy Condition="'$(Dumprodata)'=='true'"
+      Dumprodata="$(Dumprodata)"
+	    CommandLineTemplate="%(XtensaObjCopyItem.CommandLineTemplate)" 
+    />
+  
+    <Message Condition="'$(Dumpirom)'=='true'" Importance="High" Text="Object Copy -> export .irom0.text section..." />
+    <XtensaObjCopy Condition="'$(Dumpirom)'=='true'"
+      Dumpirom="$(Dumpirom)"
+      DumpiromName=".irom0text"
+	    CommandLineTemplate="%(XtensaObjCopyItem.CommandLineTemplate)" 
+    />
+    <Delete Files="$(MSBuildProjectDirectory)\ConsoleOutput.dbg"/>
+    <OnError ExecuteTargets="XtensaObjCopyError"/> 
+  </Target>
+
+  <Target Name="XtensaObjCopyError">
+    <FileUpdate Files="$(MSBuildProjectDirectory)\ConsoleOutput.dbg" Regex=":(\d+):(\d+):" ReplacementText="($1,$2):"/>
+    <FileUpdate Files="$(MSBuildProjectDirectory)\ConsoleOutput.dbg" Regex=":(\d+):" ReplacementText="($1):"/>
+    <ReadLinesFromFile File="$(MSBuildProjectDirectory)\ConsoleOutput.dbg">
+      <Output ItemName="_FileContents" TaskParameter="Lines"/>
+    </ReadLinesFromFile>
+
+    <Message Text="%(_FileContents.Identity)" Importance="High"/>
+    <Delete Files="$(MSBuildProjectDirectory)\ConsoleOutput.dbg"/>
+  </Target>
+  
+  <!-- SetXtensaVariable -->
+  <Target Name="SetXtensaVariable">
+    <SetEnv Name="PATH" Value="$(VisualStudioXtensa)Xtensa106\Bin" Prefix="false" >
+      <Output TaskParameter="OutputEnvironmentVariable" PropertyName="PATH"/>
+    </SetEnv> 
+  </Target>
+    
+</Project>

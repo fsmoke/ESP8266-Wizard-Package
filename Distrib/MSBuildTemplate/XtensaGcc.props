@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(SelectRelease)'=='NON-OS' or '$(SelectRelease)'=='ESPMesh'">
+    <IncludePath>@(XtensaHItem-&gt;DirectoryName()-&gt;Distinct());$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\include;$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\include\json;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(SelectRelease)'=='RTOS'">
+    <IncludePath>@(XtensaHItem-&gt;DirectoryName()-&gt;Distinct());$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\include;$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\include\json;$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\include\extra_include;$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\include\espressif;$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\include\lwip;$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\include\lwip\ipv4;$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\include\lwip\ipv6;$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\include\nopoll;$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\include\spiffs;$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\include\ssl;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <IncludePath>$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  
+  <ItemDefinitionGroup>
+    <XtensaCppItem>
+      <FunctionSection>true</FunctionSection>
+      <DataSection>true</DataSection>
+      <BuildDepend>true</BuildDepend>
+      <Debugformat>DbgDefFor</Debugformat>
+      <Optimization>OptSize</Optimization>
+      <NoInline>true</NoInline>
+      <NoStdLib>true</NoStdLib>
+      <LongCall>true</LongCall>
+      <TextLit>true</TextLit>
+      <PtrArimetic>true</PtrArimetic>
+      <UndefMacro>true</UndefMacro>
+      <WarAsErr>true</WarAsErr>
+      <AdditionalOptions></AdditionalOptions>
+      <AdditionalDefine Condition="'$(SelectRelease)'!='ESPMesh'">ICACHE_FLASH;AT_UPGRADE_SUPPORT;$(AdditionalDefine)</AdditionalDefine>
+      <AdditionalDefine Condition="'$(SelectRelease)'=='ESPMesh'">ICACHE_FLASH;ESP_MESH_SUPPORT;$(AdditionalDefine)</AdditionalDefine>
+      <CommandLineTemplate>xtensa-lx106-elf-gcc [BuildDepend] [IncludePath] [Optimization] [Debugformat] [PtrArimetic] [UndefMacro] [WarAsErr] -Wl,-EL [NoInline] [NoStdLib] [LongCall] [TextLit] [FunctionSection] [DataSection] [AdditionalOptions] [AdditionalDefine] -c -o "$(MSBuildProjectDirectory)\$(OutputFolder)\Obj\%(RelativeDir)%(Filename).o" "%(FullPath)" 2> &quot;$(MSBuildProjectDirectory)\ConsoleOutput.dbg&quot;</CommandLineTemplate>
+      <ExecutionDescription>Compiling %(RelativeDir)%(Filename)%(Extension)...</ExecutionDescription>
+      <StaticExecutionDescription>Compiling %(RelativeDir)%(Filename)%(Extension) with static dependency...</StaticExecutionDescription>
+    </XtensaCppItem>
+  </ItemDefinitionGroup>
+</Project>

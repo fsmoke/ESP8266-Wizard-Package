@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--** Item Group ******************************************************************************************************************************-->
+  <ItemGroup>
+    <PropertyPageSchema Include="$(VisualStudioXtensa)MSBuildTemplate\XtensaLd\XtensaLd.xml" />
+  </ItemGroup>
+
+  <!--** Task ************************************************************************************************************************************-->
+  <UsingTask TaskName="SetEnv" AssemblyFile="$(VCTargetsPath)Microsoft.Build.CppTasks.Common.dll"/>
+  
+  <UsingTask TaskName="XtensaLd" TaskFactory="XamlTaskFactory" AssemblyName="Microsoft.Build.Tasks.v4.0">
+    <Task>$(VisualStudioXtensa)MSBuildTemplate\XtensaLd\XtensaLd.xml</Task>
+  </UsingTask>
+
+  <!--** Targets *********************************************************************************************************************************-->
+  <!-- XtensaLd After[Build] Depends[SetXtensaVariable] -->
+  <Target Name="XtensaLd" AfterTargets="XtensaAr" DependsOnTargets="SetXtensaVariable;XtensaLdPrepareFolder">
+
+    <ItemGroup>
+      <XtensaArchiveItem Include="$(MSBuildProjectDirectory)\$(OutputFolder)\Lib\*.a"/>
+    </ItemGroup>
+    
+    <CreateItem Include="Nothing">
+      <Output ItemName="XtensaLdItem" TaskParameter="Include"/>
+    </CreateItem>  
+        
+    <ItemGroup>
+      <XtensaLdItem>
+        <CommandLineTemplate>xtensa-lx106-elf-gcc [LibFolder] [LdScriptFolder] [NoStdLib] -Wl,--no-check-sections -u call_user_start -Wl,-static -Wl,--start-group [AdditionalLib] [AdditionalAr] -Wl,--end-group -o &quot;$(MSBuildProjectDirectory)\$(OutputFolder)\Image\$(MSBuildProjectName).eagle.app.v6.out&quot; 2> &quot;$(MSBuildProjectDirectory)\ConsoleOutput.dbg&quot;"</CommandLineTemplate>
+        <LdScript Condition="'$(ESPBoot)'=='No Boot'">$(LdScriptFolder)\eagle.app.v6.ld</LdScript>
+        <LdScript Condition="'$(ESPBoot)'!='No Boot'">$(LdScriptFolder)\eagle.app.v6.%(ESPBuilder.BootName).%(ESPBuilder.UserRam).App$(ESPBin).ld</LdScript>
+        <LdScript Condition="'$(ESPBoot)'!='No Boot' and '$(SPISize)'>='5'">$(LdScriptFolder)\eagle.app.v6.new.%(ESPBuilder.UserRam).ld</LdScript>
+        <AdditionalArchive>@(XtensaArchiveItem) $(AdditionalAr)</AdditionalArchive>
+        <ExecutionDescription>Linking...</ExecutionDescription>
+      </XtensaLdItem>
+    </ItemGroup>
+
+    <Message Importance="High" Text="%(XtensaLdItem.ExecutionDescription)" />
+    <XtensaLd
+      LibFolder="$(LibFolder)"
+      LdScriptFolder="%(XtensaLdItem.LdScript)"
+      NoStdLib="$(NoStdLib)"
+      AdditionalOptions="$(AdditionalOptions)"
+      AdditionalLib="$(AdditionalLib);"
+      AdditionalAr="%(XtensaLdItem.AdditionalArchive)"
+	    CommandLineTemplate="%(XtensaLdItem.CommandLineTemplate)"
+    />
+    <Delete Files="$(MSBuildProjectDirectory)\ConsoleOutput.dbg"/>
+    <OnError ExecuteTargets="XtensaLdError"/>
+  </Target>
+
+  <Target Name="XtensaLdError">
+    <FileUpdate Files="$(MSBuildProjectDirectory)\ConsoleOutput.dbg" Regex=":(\d+):(\d+):" ReplacementText="($1,$2):"/>
+    <FileUpdate Files="$(MSBuildProjectDirectory)\ConsoleOutput.dbg" Regex=":(\d+):" ReplacementText="($1):"/>
+    <ReadLinesFromFile File="$(MSBuildProjectDirectory)\ConsoleOutput.dbg">
+      <Output ItemName="_FileContents" TaskParameter="Lines"/>
+    </ReadLinesFromFile>
+
+    <Message Text="%(_FileContents.Identity)" Importance="High"/>
+    <Delete Files="$(MSBuildProjectDirectory)\ConsoleOutput.dbg"/>
+  </Target>
+  
+  <!-- SetXtensaVariable -->
+  <Target Name="SetXtensaVariable">
+    <SetEnv Name="PATH" Value="$(VisualStudioXtensa)Xtensa106\Bin" Prefix="false" >
+      <Output TaskParameter="OutputEnvironmentVariable" PropertyName="PATH"/>
+    </SetEnv> 
+  </Target>
+ 
+  <!-- XtensaLdPrepareFolder -->
+  <Target Name="XtensaLdPrepareFolder">
+    <MakeDir Directories="$(MSBuildProjectDirectory)\$(OutputFolder)\Image\" />
+  </Target>
+  
+  <!-- XtensaClean -->
+  <Target Name="XtensaLdClean" AfterTargets="Clean">
+    <RemoveDir Directories="$(MSBuildProjectDirectory)\$(OutputFolder)\Image" />
+  </Target>
+
+</Project>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ProjectSchemaDefinitions xmlns="http://schemas.microsoft.com/build/2009/properties" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <Rule Name="XtensaLd"
+        DisplayName="Xtensa LD"
+        PageTemplate="tool"
+	      SwitchPrefix=""
+        Description="Xtensa Linker Directive property sheet" Order="400"
+        xmlns="http://schemas.microsoft.com/build/2009/properties">
+    
+    <Rule.Categories>
+      <Category Name="General" DisplayName="General" />
+      <Category Name="Optimizer" DisplayName="Optimizer" />
+      <Category Name="CMDLine" DisplayName="Command Line" Subtype="CommandLine"/>
+    </Rule.Categories>
+    
+    <Rule.DataSource>
+      <DataSource Persistence="ProjectFile" />
+    </Rule.DataSource>
+
+    <!-- Rule Inputs, CommandLine UI Variables -->
+    <StringListProperty Name="Inputs" Category="CMDLine" IsRequired="false" Visible="False" Subtype="File" Separator=" "/>
+    <StringProperty Name="Outputs" Category="CMDLine" Visible="False" Subtype="File"/>
+    <StringProperty Subtype="AdditionalOptions" Name="AdditionalOptions" DisplayName="Additional Options" Category="CMDLine"/>
+    <StringProperty Name="CommandLineTemplate" DisplayName="Command Line" Visible="False" IncludeInCommandLine="False" />
+    <StringProperty Name="ExecutionDescription" DisplayName="Execution Description" IncludeInCommandLine="False" Visible="False" />
+    
+    <!-- Common -->
+    <StringListProperty Name="LibFolder" DisplayName="Library Folder" Description="Additional library folder" Category="General" Switch="-L" Subtype="Folder"/>
+    <StringProperty Name="LdScriptFolder" DisplayName="Ld Script Folder" Description="Ld Script Folder" Category="General" Subtype="Folder" Switch="-T"/>
+    <StringListProperty Name="AdditionalLib" DisplayName="Additional Library" Description="Additional library" Category="General" Switch="-l"/>
+    <StringListProperty Name="AdditionalAr" DisplayName="Additional Archive" Description="Additional Archive" Category="General" Separator=" "/>
+
+    <!-- Optimization -->
+    <BoolProperty Name="NoStdLib" DisplayName="No Standard Library" Description="No Standard Library" Category="Optimizer" Switch="-nostdlib"/>
+  </Rule>
+</ProjectSchemaDefinitions>

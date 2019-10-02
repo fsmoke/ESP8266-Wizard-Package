@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ProjectSchemaDefinitions xmlns="http://schemas.microsoft.com/build/2009/properties" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <Rule Name="ESPRAM"
+        DisplayName="ESP8266"
+        PageTemplate="generic"
+        SwitchPrefix=""
+        Description="ESP8266 property sheet" Order="200"
+        xmlns="http://schemas.microsoft.com/build/2009/properties">
+
+      <Rule.Categories>
+        <Category Name="ESPRAMConfig" DisplayName="ESP Ram Configuration" />
+        <Category Name="ESPToolConfig" DisplayName="ESPTool Configuration" />
+      </Rule.Categories>
+
+      <Rule.DataSource>
+        <DataSource Persistence="ProjectFile" HasConfigurationCondition="true"/>
+      </Rule.DataSource>
+
+      <StringProperty Name="CommandLineTemplate" DisplayName="Command Line" Visible="False" IncludeInCommandLine="False" />
+      <StringProperty Name="ExecutionDescription" DisplayName="Execution Description" IncludeInCommandLine="False" Visible="False" />
+
+      <DynamicEnumProperty Name="ESPBoot" DisplayName="ESP Boot Mode"
+                  Description="Select version of ESP Boot Mode."
+                  Category="ESPRAMConfig" EnumProvider="ProjectExpression">
+        <DynamicEnumProperty.ProviderSettings>
+          <NameValuePair Name="Include" Value="@(BootName)" />
+        </DynamicEnumProperty.ProviderSettings>
+      </DynamicEnumProperty>
+
+      <EnumProperty Name="ESPBin" DisplayName="ESP Bin Mode"
+                Description="Select ESP Bin version."
+                Category="ESPRAMConfig">
+        <EnumValue Name="1" DisplayName="User1.bin" Description="Using User 1 slot" />
+        <EnumValue Name="2" DisplayName="User2.bin" Description="Using User 2 slot" />
+      </EnumProperty>
+      <EnumProperty Name="SPISpeed" DisplayName="ESP SPI Speed Mode"
+                  Description="Select SPI Speed."
+                  Category="ESPRAMConfig">
+        <EnumValue Name="0" DisplayName="20 Mhz - Frequence Div 0" Description="20 Mhz speed mode" />
+        <EnumValue Name="1" DisplayName="26.7 Mhz - Frequence Div 1" Description="26.7 Mhz speed mode" />
+        <EnumValue Name="2" DisplayName="40 Mhz - Frequence Div 2" Description="40 Mhz speed mode" />
+        <EnumValue Name="15" DisplayName="80 Mhz - Frequence Div 15" Description="80 Mhz speed mode" />
+      </EnumProperty>
+      <EnumProperty Name="SPIMode" DisplayName="ESP SPI Transfert Mode"
+                  Description="Select SPI transfert Mode."
+                  Category="ESPRAMConfig">
+        <EnumValue Name="0" DisplayName="QIO" Description="QIO Transfert Mode" />
+        <EnumValue Name="1" DisplayName="QOUT" Description="QOUT Transfert Mode" />
+        <EnumValue Name="2" DisplayName="DIO" Description="DIO Transfert Mode" />
+        <EnumValue Name="3" DisplayName="DOUT" Description="DOUT Transfert Mode" />
+      </EnumProperty>     
+      <EnumProperty Name="SPISize" DisplayName="ESP SPI Size"
+                  Description="Select SPI Size."
+                  Category="ESPRAMConfig">
+        <EnumValue Name="2" DisplayName="1024KB [512KB + 512KB]" Description="Total [User1 + User2]" />
+        <EnumValue Name="3" DisplayName="2048KB [512KB + 512KB]" Description="Total [User1 + User2]" />
+        <EnumValue Name="4" DisplayName="4096KB [512KB + 512KB]" Description="Total [User1 + User2]" />
+	      <EnumValue Name="5" DisplayName="2048KB [1024KB + 1024KB]" Description="Total [User1 + User2]" />
+        <EnumValue Name="6" DisplayName="4096KB [1024KB + 1024KB]" Description="Total [User1 + User2]" />
+      </EnumProperty>
+
+      <EnumProperty Name="ComPort" DisplayName="Serial Port Number"
+                  Description="Select Serial Port."
+                  Category="ESPToolConfig">
+        <EnumValue Name="COM1" DisplayName="COM1" Description="RS-323 Serial Port" />
+        <EnumValue Name="COM2" DisplayName="COM2" Description="RS-323 Serial Port" />
+        <EnumValue Name="COM3" DisplayName="COM3" Description="RS-323 Serial Port" />
+        <EnumValue Name="COM4" DisplayName="COM4" Description="RS-323 Serial Port" />
+        <EnumValue Name="COM5" DisplayName="COM5" Description="RS-323 Serial Port" />
+      </EnumProperty>
+
+      <EnumProperty Name="ComSpeed" DisplayName="Serial Port Speed"
+                    Description="Select Serial Port Speed."
+                    Category="ESPToolConfig">
+        <EnumValue Name="9600" DisplayName="9600" Description="RS-323 Serial Port Speed" />
+        <EnumValue Name="14400" DisplayName="14400" Description="RS-323 Serial Port Speed" />
+        <EnumValue Name="19200" DisplayName="19200" Description="RS-323 Serial Port Speed" />
+        <EnumValue Name="28800" DisplayName="28800" Description="RS-323 Serial Port Speed" />
+        <EnumValue Name="38400" DisplayName="38400" Description="RS-323 Serial Port Speed" />
+        <EnumValue Name="56000" DisplayName="56000" Description="RS-323 Serial Port Speed" />
+        <EnumValue Name="57600" DisplayName="57600" Description="RS-323 Serial Port Speed" />
+        <EnumValue Name="115200" DisplayName="115200" Description="RS-323 Serial Port Speed" />
+      </EnumProperty>
+
+      <EnumProperty Name="ESPToolReset" DisplayName="EspTool Reset Mode"
+                    Description="Select EspTool Reset Mode."
+                    Category="ESPToolConfig">
+        <EnumValue Name="none" DisplayName="none" Description="No protocol employed, manual reset required." />
+        <EnumValue Name="auto" DisplayName="auto" Description="DTR capacitively coupled to RST, RTS controls GPIO0." />
+        <EnumValue Name="dtrOnly" DisplayName="dtrOnly" Description="DTR capacitively coupled to RST and controls GPIO0 directly." />
+        <EnumValue Name="ck" DisplayName="ck" Description="RTS controls RST, DTR controls GPIO0." />
+        <EnumValue Name="wifio" DisplayName="wifio" Description="DTR capacitively coupled to RST, TxD controls GPIO0 via a PNP transistor." />
+        <EnumValue Name="NodeMCU" DisplayName="NodeMCU" Description="DTR and RTS control RST and GPIO0 via cross-coupled NPN transistors." />
+      </EnumProperty>
+    
+      <BoolProperty Name="MasterIOT" DisplayName="Master Key IOT Rule" Description="Use Master Key IOT Rule adress" Category="ESPToolConfig"/>
+      <BoolProperty Name="ESPDataLocal" DisplayName="Use Local ESP Init Data" Description="Use ESP Init Data located inside projects folder." Category="ESPToolConfig" />
+      <BoolProperty Name="FlashMaster" DisplayName="Flash Master Key" Description="Flash master_device_key.bin" Category="ESPToolConfig" />
+      <BoolProperty Name="FlashESPData" DisplayName="Flash ESP Init Data" Description="Flash esp_init_data_default.bin" Category="ESPToolConfig" />
+      <BoolProperty Name="FlashBlank" DisplayName="Flash Blank Section" Description="Flash Blank.bin" Category="ESPToolConfig" />
+      <BoolProperty Name="FlashBoot" DisplayName="Flash Blank Boot/Eagle" Description="Flash Boot.bin or eagle.flash.bin" Category="ESPToolConfig" />
+      <BoolProperty Name="FlashUser" DisplayName="Flash Blank User/irom0text" Description="Flash UserX.bin or eagle.irom0text.bin" Category="ESPToolConfig" />
+  </Rule>
+</ProjectSchemaDefinitions>

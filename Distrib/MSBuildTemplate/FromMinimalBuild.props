@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <OutputFolder>Generated Files\$(Configuration)</OutputFolder>
+    <VCTargetsPathActual>$(VCTargetsPath)</VCTargetsPathActual>
+  </PropertyGroup>
+
+  
+  <Choose>
+    <When Condition="Exists('$(VisualStudioXtensa)ESPressif')">
+      <ItemGroup>
+        <ReleaseFolder Include="$([System.IO.Directory]::GetDirectories(&quot;$(VisualStudioXtensa)ESPressif\&quot;))" />
+        <ReleaseName Include="@(ReleaseFolder->'%(filename)%(extension)')"/>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="Exists('$(VisualStudioXtensa)ESPressif\$(SelectRelease)')">
+      <ItemGroup>
+        <VersionFolder Include="$([System.IO.Directory]::GetDirectories(&quot;$(VisualStudioXtensa)ESPressif\$(SelectRelease)&quot;))"/>
+        <VersionName Include="@(VersionFolder->'%(filename)%(extension)')" />
+      </ItemGroup>
+    </When>
+  </Choose>
+
+  <ItemGroup>
+    <PropertyPageSchema Include="$(VisualStudioXtensa)MSBuildTemplate\FromMinimalBuild\Common_Project.xml"/>    
+    <PropertyPageSchema Include="$(VisualStudioXtensa)MSBuildTemplate\FromMinimalBuild\Common_Item.xml">
+      <Context>Project;File</Context>
+    </PropertyPageSchema>
+  </ItemGroup>
+
+</Project>

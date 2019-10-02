@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ProjectSchemaDefinitions xmlns="http://schemas.microsoft.com/build/2009/properties" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <Rule Name="XtensaObjCopy"
+        DisplayName="Xtensa Object Copy"
+        PageTemplate="tool"
+	      SwitchPrefix=""
+        Description="Xtensa Object Copy property sheet" Order="400"
+        xmlns="http://schemas.microsoft.com/build/2009/properties">
+    
+    <Rule.Categories>
+      <Category Name="General" DisplayName="General" />
+    </Rule.Categories>
+    
+    <Rule.DataSource>
+      <DataSource Persistence="ProjectFile" />
+    </Rule.DataSource>
+
+    <!-- Rule Inputs, CommandLine UI Variables -->
+    <StringProperty Name="CommandLineTemplate" DisplayName="Command Line" Visible="False" IncludeInCommandLine="False" />
+    <StringProperty Name="ExecutionDescription" DisplayName="Execution Description" IncludeInCommandLine="False" Visible="False" />
+    <StringProperty Name="Inputs" Visible="False" IncludeInCommandLine="False"/>
+      
+    <!-- Common -->
+    <BoolProperty Name="DumpText" DisplayName=".text dump filename" Description="Dump .text section" Switch=".text"/>
+    <BoolProperty Name="DumpData" DisplayName=".data dump filename" Description="Dump .data section" Switch=".data"/>
+    <BoolProperty Name="Dumprodata" DisplayName=".rodata dump filename" Description="Dump .rodata section" Switch=".rodata"/>
+    <BoolProperty Name="Dumpirom" DisplayName=".irom0text dump filename" Description="Dump .irom0text section" Switch=".irom0.text"/>
+    <StringProperty Name="DumpiromName" Visible="False" IncludeInCommandLine="False"/>
+  </Rule>
+</ProjectSchemaDefinitions>

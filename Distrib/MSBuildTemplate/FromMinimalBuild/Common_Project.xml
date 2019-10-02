@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ProjectSchemaDefinitions xmlns="http://schemas.microsoft.com/build/2009/properties" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <Rule Name="General_Sheet"
+        DisplayName="General"
+        PageTemplate="generic"
+        SwitchPrefix=""
+        Description="ESP General property sheet" Order="100"
+        xmlns="http://schemas.microsoft.com/build/2009/properties">
+
+      <Rule.Categories>
+        <Category Name="Directory" DisplayName="Directory" />
+      </Rule.Categories>
+
+      <Rule.DataSource>
+        <DataSource Persistence="ProjectFile" HasConfigurationCondition="true" />
+      </Rule.DataSource>
+   
+    <StringProperty Name="OutputFolder" DisplayName="Output Folder" Description="Output generation folder" Category="Directory" />
+    <DynamicEnumProperty Name="SelectRelease" DisplayName="SDK Release Type" Category="General" EnumProvider="ProjectExpression">
+        <DynamicEnumProperty.ProviderSettings>
+          <NameValuePair Name="Include" Value="@(ReleaseName)" />
+        </DynamicEnumProperty.ProviderSettings>
+      </DynamicEnumProperty>
+  
+      <DynamicEnumProperty Name="SelectVersion" DisplayName="SDK Version" Category="General" EnumProvider="ProjectExpression">
+        <DynamicEnumProperty.ProviderSettings>
+          <NameValuePair Name="Include" Value="@(VersionName)" />
+        </DynamicEnumProperty.ProviderSettings>
+      </DynamicEnumProperty>
+   </Rule>
+</ProjectSchemaDefinitions>
