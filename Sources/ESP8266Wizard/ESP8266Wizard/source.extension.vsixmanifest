@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+    <Metadata>
+        <Identity Id="ESP8266Wizard.Mathieu St-Laurent.2369a963-05dc-4156-8143-c93633763702" Version="1.4.0" Language="en-US" Publisher="Mathieu St-Laurent - Rev OpenSource" />
+        <DisplayName>ESP8266Wizard</DisplayName>
+        <Description xml:space="preserve">Create an ESP8266 C Project from SDK/Example or Blank Project</Description>
+    </Metadata>
+    <Installation>
+        <InstallationTarget Version="[11.0,16.0)" Id="Microsoft.VisualStudio.Community" />
+    </Installation>
+    <Dependencies>
+        <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
+    </Dependencies>
+    <Assets>
+        <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="Project" d:ProjectName="ESP8266Template" d:TargetPath="|ESP8266Template;TemplateProjectOutputGroup|" Path="ProjectTemplates" d:VsixSubPath="ProjectTemplates" />
+        <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="Project" d:ProjectName="ESP8266ClassWizard" Path="|ESP8266ClassWizard|" AssemblyName="|ESP8266ClassWizard;AssemblyName|" />
+    </Assets>
+    <Prerequisites>
+        <Prerequisite Id="Microsoft.VisualStudio.Component.VC.CoreIde" Version="[11.0,16.0)" DisplayName="Fonctionnalités de base C++ de Visual Studio" />
+    </Prerequisites>
+</PackageManifest>
