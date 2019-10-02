@@ -61,7 +61,9 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\Temp\bin\ESP8266Template\Debug\</OutputPath>
+	<BaseOutputPath>..\..\Temp\bin\ESP8266Template\Debug\</BaseOutputPath>
+	<BaseIntermediateOutputPath>..\..\Temp\ESP8266Template\</BaseIntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -70,7 +72,9 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\Temp\bin\ESP8266Template\Release\</OutputPath>
+	<BaseOutputPath>..\..\Temp\bin\ESP8266Template\Release\</BaseOutputPath>
+	<BaseIntermediateOutputPath>..\..\Temp\ESP8266Template\</BaseIntermediateOutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

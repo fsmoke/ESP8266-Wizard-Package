@@ -76,17 +76,25 @@
     <LinkIncremental>true</LinkIncremental>
     <LinkKeyFile>$(RootNamespace).snk</LinkKeyFile>
     <LinkDelaySign>true</LinkDelaySign>
+    <IntDir>..\..\Temp\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>..\..\Temp\bin\$(ProjectName)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IntDir>..\..\Temp\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>..\..\Temp\bin\$(ProjectName)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <LinkKeyFile>$(RootNamespace).snk</LinkKeyFile>
     <LinkDelaySign>true</LinkDelaySign>
+    <IntDir>..\..\Temp\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>..\..\Temp\bin\$(ProjectName)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IntDir>..\..\Temp\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>..\..\Temp\bin\$(ProjectName)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
