@@ -4,6 +4,7 @@
 #define ApplicationVersion '1.4.0'
 #define OldAppId '{3793A16D-841C-4E6C-931B-9D5AD44410C9}'
 #define Revision 'OpenSource (1.0)'
+#define SourceURL 'https://github.com/fsmoke/ESP8266-Wizard-Package'
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -14,7 +15,7 @@ AppName={#ApplicationName}
 AppVersion={#ApplicationVersion}
 AppPublisher=Mathieu St-Laurent - Relentless research lab
 DefaultDirName={pf}\Relentless.rad\ESP8266Wizard
-DisableDirPage=no
+DisableDirPage=false
 DisableProgramGroupPage=yes
 OutputDir=Release
 OutputBaseFilename={#ApplicationName} {#ApplicationVersion} - {#Revision}
@@ -86,7 +87,7 @@ end;
 
 procedure SourcesLinkClick(Sender: TObject);
 begin
-  OpenBrowser('https://www.example.com/');
+  OpenBrowser(SourceURL);
 end;
 
 procedure InitializeWizard;
@@ -219,4 +220,3 @@ begin
 	end;
 	Result:= True;
 end;
-
