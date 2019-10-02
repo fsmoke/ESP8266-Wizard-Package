@@ -87,7 +87,7 @@ end;
 
 procedure SourcesLinkClick(Sender: TObject);
 begin
-  OpenBrowser(SourceURL);
+  OpenBrowser('{#SourceURL}');
 end;
 
 procedure InitializeWizard;
@@ -193,10 +193,10 @@ begin
 	NeedsRestart := False;
 	if (VSIXInstallerPaths.Count > 0) then
 	begin
-		MsgBox(VSIXInstallerPaths[0], mbInformation, MB_OK);
+		//MsgBox(VSIXInstallerPaths[0], mbInformation, MB_OK);
 		ExtractTemporaryFiles('{app}\ESP8266Wizard.vsix');
 
-		MsgBox(ExpandConstant('{tmp}\')+'{app}\ESP8266Wizard.vsix', mbInformation, MB_OK);
+		//MsgBox(ExpandConstant('{tmp}\')+'{app}\ESP8266Wizard.vsix', mbInformation, MB_OK);
 
 		Exec(VSIXInstallerPaths[0] + 'VSIXInstaller',
 			ExpandConstant('{tmp}\')+'{app}\ESP8266Wizard.vsix',
