@@ -4,7 +4,7 @@ Esp8266 visual studio add-in
 Originally forked this add in https://bbs.espressif.com/viewtopic.php?t=3577
 All copyrights saved.
 
-# Fixes in this version
+# Fixes and changes in this version
 
 * Removed VsixInstaller and dependencies from setup script, instead used regkey to determine vs2017 path to run native VsixInstaller
 * Fixed irom flash address for NON-OS SDK 2.X.X(and above) versions (was 40000, must be 10000)
