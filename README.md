@@ -11,7 +11,7 @@ All copyrights saved.
 * Removed old version of Visual studio(2013, 2015)
 * Replaced some graphical files
 * Reorganization of project directories(to avoid building to source directory)
-* Removed source code from distrib, instead source code can be retrieved from here(source link add to distrib)
+* Removed source code from distrib, instead source code can be retrieved from here(source link added to distrib)
 * Added new versions NON-OS SDK
 
 # TODO for future versions
