@@ -13,6 +13,7 @@ All copyrights saved.
 * Reorganization of project directories(to avoid building to source directory)
 * Removed source code from distrib, instead source code can be retrieved from here(source link added to distrib)
 * Added new versions NON-OS SDK
+* Some terms translated(was in French) to international(English) language
 
 # TODO for future versions
 
