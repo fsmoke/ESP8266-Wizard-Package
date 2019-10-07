@@ -14,6 +14,8 @@ All copyrights saved.
 * Removed source code from distrib, instead source code can be retrieved from here(source link added to distrib)
 * Added new versions NON-OS SDK
 * Some terms translated(was in French) to international(English) language
+* Fixed ESP init data for NON-OS SDK 2.2.x and above
+* Fixed rm utility for python scripts
 
 # TODO for future versions
 
