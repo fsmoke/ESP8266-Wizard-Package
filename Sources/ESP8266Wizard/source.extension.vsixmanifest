@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="ESP8266Wizard.Mathieu St-Laurent.2369a963-05dc-4156-8143-c93633763702" Version="1.4.1" Language="en-US" Publisher="Mathieu St-Laurent - Rev OpenSource" />
+        <Identity Id="ESP8266Wizard.Mathieu St-Laurent.2369a963-05dc-4156-8143-c93633763702" Version="1.4.2" Language="en-US" Publisher="Mathieu St-Laurent - Rev OpenSource" />
         <DisplayName>ESP8266Wizard</DisplayName>
         <Description xml:space="preserve">Create an ESP8266 C Project from SDK/Example or Blank Project</Description>
     </Metadata>
