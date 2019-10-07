@@ -110,14 +110,15 @@
 
   <Target Name="ESPTOOL" AfterTargets="ESPRAM" DependsOnTargets="SetPythonVariable">
     <Message Importance="High" Text="*** Flash Table **************************************" />
-    <Message Condition="'$(FlashMaster)'=='true'" Importance="High" Text="Master Device Key adresss : %(ESPBuilder.MasterKey)" />
-    <Message Condition="'$(FlashESPData)'=='true'" Importance="High" Text="ESP Init Data adresss     : %(ESPBuilder.ESPData)" />
-    <Message Condition="'$(FlashBlank)'=='true'" Importance="High" Text="Blank Data adresss        : %(ESPBuilder.Blank)" />
-    <Message Condition="'$(ESPBoot)'=='No Boot' and '$(FlashBoot)'=='true'" Importance="High" Text="eagle.flash adresss       : 0x00000" />
+    <Message Condition="'$(FlashMaster)'=='true'" Importance="High" Text="Master Device Key address : %(ESPBuilder.MasterKey)" />
+    <!--Message Condition="'$(FlashESPData)'!='true'" Importance="High" Text="ESP Init Data address     : %(ESPBuilder.ESPData)" /-->
+	<Message Condition="'$(FlashESPDataFile)'!='No'" Importance="High" Text="ESP Init Data address     : %(ESPBuilder.ESPData)" />
+    <Message Condition="'$(FlashBlank)'=='true'" Importance="High" Text="Blank Data address        : %(ESPBuilder.Blank)" />
+    <Message Condition="'$(ESPBoot)'=='No Boot' and '$(FlashBoot)'=='true'" Importance="High" Text="eagle.flash address       : 0x00000" />
     <Message Condition="'$(ESPBoot)'=='No Boot' and $(SelectVersion.Substring(0, $(SelectVersion.IndexOf('.'))))&lt;2 and '$(FlashUser)'=='true'" Importance="High" Text="eagle.irom0text address   : 0x40000" />
 	<Message Condition="'$(ESPBoot)'=='No Boot' and $(SelectVersion.Substring(0, $(SelectVersion.IndexOf('.'))))&gt;=2 and '$(FlashUser)'=='true'" Importance="High" Text="eagle.irom0text address   : 0x10000" />
 	
-    <Message Condition="'$(ESPBoot)'!='No Boot' and '$(FlashBoot)'=='true'" Importance="High" Text="boot adresss              : 0x00000" />
+    <Message Condition="'$(ESPBoot)'!='No Boot' and '$(FlashBoot)'=='true'" Importance="High" Text="boot address              : 0x00000" />
     <Message Condition="'$(ESPBoot)'!='No Boot' and '$(FlashUser)'=='true'" Importance="High" Text="User$(ESPBin) address             : %(ESPBuilder.UserAddr)" />
   
     <PropertyGroup>
@@ -126,8 +127,11 @@
       <AdresseList></AdresseList>
       <AdresseList Condition="'$(FlashMaster)'=='true'">$([System.String]::Concat($(AdresseList), "-a%(ESPBuilder.MasterKey) &quot;$(MSBuildProjectDirectory)\master_device_key.bin&quot; "))</AdresseList>
       
-      <AdresseList Condition="'$(FlashESPData)'=='true' and '$(ESPDataLocal)'!='true'">$([System.String]::Concat($(AdresseList), "-a%(ESPBuilder.ESPData) &quot;$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\bin\esp_init_data_default.bin&quot; "))</AdresseList>
-      <AdresseList Condition="'$(FlashESPData)'=='true' and '$(ESPDataLocal)'=='true'">$([System.String]::Concat($(AdresseList), "-a%(ESPBuilder.ESPData) &quot;$(MSBuildProjectDirectory)\esp_init_data_default.bin&quot; "))</AdresseList>
+      <!--AdresseList Condition="'$(FlashESPData)'=='true' and '$(ESPDataLocal)'!='true'">$([System.String]::Concat($(AdresseList), "-a%(ESPBuilder.ESPData) &quot;$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\bin\esp_init_data_default.bin&quot; "))</AdresseList>
+      <AdresseList Condition="'$(FlashESPData)'=='true' and '$(ESPDataLocal)'=='true'">$([System.String]::Concat($(AdresseList), "-a%(ESPBuilder.ESPData) &quot;$(MSBuildProjectDirectory)\esp_init_data_default.bin&quot; "))</AdresseList-->
+	  
+	  <AdresseList Condition="'$(FlashESPDataFile)'!='No' and '$(ESPDataLocal)'!='true'">$([System.String]::Concat($(AdresseList), "-a%(ESPBuilder.ESPData) &quot;$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\bin\$(FlashESPDataFile).bin&quot; "))</AdresseList>
+      <AdresseList Condition="'$(FlashESPDataFile)'!='No' and '$(ESPDataLocal)'=='true'">$([System.String]::Concat($(AdresseList), "-a%(ESPBuilder.ESPData) &quot;$(MSBuildProjectDirectory)\esp_init_data_default.bin&quot; "))</AdresseList>
       
       <AdresseList Condition="'$(FlashBlank)'=='true'">$([System.String]::Concat($(AdresseList), "-a%(ESPBuilder.Blank) &quot;$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\bin\blank.bin&quot; "))</AdresseList>
 

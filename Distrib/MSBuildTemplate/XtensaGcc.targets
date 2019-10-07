@@ -28,7 +28,9 @@
     <Error Condition="!Exists('$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\ld\eagle.rom.addr.v6.ld')" File="Build Stop..." Text="ESP LD Script Folder seem missing, repair or reinstall your package."/>
     <Error Condition="!Exists('$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\lib\libmain.a')" File="Build Stop..." Text="ESP LIB Folder seem missing, repair or reinstall your package."/>
     <Error Condition="!Exists('$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\bin\$(ESPBoot).bin') and '$(ESPBoot)'!='No Boot'" File="Build Stop..." Text="[$(ESPBoot).bin] seem missing, Reselect propers ESP Boot Mode inside property."/>
-    <Error Condition="!Exists('$(MSBuildProjectDirectory)\esp_init_data_default.bin') and '$(FlashESPData)'=='true' and '$(ESPDataLocal)'=='true'" File="Build Stop..." Text="[esp_init_data_default.bin] seem missing inside your project folder, please add."/>
+    <!--Error Condition="!Exists('$(MSBuildProjectDirectory)\esp_init_data_default.bin') and '$(FlashESPData)'=='true' and '$(ESPDataLocal)'=='true'" File="Build Stop..." Text="[esp_init_data_default.bin] seem missing inside your project folder, please add."/-->
+	<Error Condition="'$(FlashESPDataFile)'!='No' and !Exists('$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\bin\$(FlashESPDataFile).bin') and '$(ESPDataLocal)'!='true'" File="Build Stop..." Text="[$(FlashESPDataFile).bin] seem missing, Reselect propers ESP init data file."/>
+	<Error Condition="!Exists('$(MSBuildProjectDirectory)\esp_init_data_default.bin') and '$(ESPDataLocal)'=='true'" File="Build Stop..." Text="[esp_init_data_default.bin] seem missing inside your project folder, please add."/>
 
     <!--ItemGroup>
       <XtensaCppItem>

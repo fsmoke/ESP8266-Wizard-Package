@@ -10,18 +10,25 @@
     <MasterIOT>false</MasterIOT>
     <ESPDataLocal>false</ESPDataLocal>
     <FlashMaster>false</FlashMaster>
-    <FlashESPData>true</FlashESPData>
+    <!--FlashESPData>false</FlashESPData-->
+	<FlashESPDataFile>No</FlashESPDataFile>
+	
     <FlashBlank>true</FlashBlank>
     <FlashBoot>true</FlashBoot>
     <FlashUser>true</FlashUser>
   </PropertyGroup>
   
-  <ItemGroup>
-    <BootList Include="No boot"/>
-    <BootList Condition="Exists('$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)')" Include="$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\bin\Boot*.bin" />
-    <BootName Include="@(BootList->'%(filename)')"/>
-  </ItemGroup>
+	<ItemGroup>
+		<BootList Include="No boot"/>
+		<BootList Condition="Exists('$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)')" Include="$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\bin\Boot*.bin" />
+		<BootName Include="@(BootList->'%(filename)')"/>
+	</ItemGroup>
 
+	<ItemGroup>
+		<ESPDataFileList Include="No"/>
+		<ESPDataFileList Condition="Exists('$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)')" Include="$(VisualStudioXtensa)ESPressif\$(SelectRelease)\$(SelectVersion)\bin\esp_init_data_default*.bin" />
+		<FlashESPDataFileName Include="@(ESPDataFileList->'%(filename)')"/>
+	</ItemGroup>
   <ItemDefinitionGroup>
     <ESPBuilder>
     </ESPBuilder>
