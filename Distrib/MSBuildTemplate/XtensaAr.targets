@@ -20,8 +20,13 @@
       <XtensaAr Remove="@(XtensaCppItem)" Condition="'%(Identity)' != '@(SelectedFiles)'" />
     </ItemGroup>
 
+	<ItemGroup>
+		<XtensaObjFolders Include="@(XtensaCppItem->RelativeDir()->Distinct())"/>
+	</ItemGroup>
+	<Message Text="This is my list of TXT files: @(XtensaObjFolders)"/>
     <ItemGroup>
-      <XtensaObjItem Include="$(MSBuildProjectDirectory)\$(OutputFolder)\Obj\%(XtensaArItem.Identity)\*.o"/>
+      <!--XtensaObjItem Include="$(MSBuildProjectDirectory)\$(OutputFolder)\Obj\%(XtensaArItem.Identity)\*.o"/-->
+	  <XtensaObjItem Include="$(MSBuildProjectDirectory)\$(OutputFolder)\Obj\%(XtensaObjFolders.Identity)*.o"/>
     </ItemGroup>
     
     <Message Importance="High" Text="%(XtensaArItem.ExecutionDescription)" />
