@@ -57,7 +57,8 @@
  
   <!-- XtensaArCreateItem -->
   <Target Name="XtensaArCreateItem">
-    <CreateItem Include="@(XtensaCppItem->RelativeDir()->Distinct()->Replace('\', ''))">
+    <!--CreateItem Include="@(XtensaCppItem->RelativeDir()->Distinct()->Replace('\', ''))"-->
+	<CreateItem Include="user">
       <Output ItemName="XtensaArItem" TaskParameter="Include"/>
     </CreateItem>   
   
