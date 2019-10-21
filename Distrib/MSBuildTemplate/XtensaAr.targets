@@ -23,7 +23,7 @@
 	<ItemGroup>
 		<XtensaObjFolders Include="@(XtensaCppItem->RelativeDir()->Distinct())"/>
 	</ItemGroup>
-	<Message Text="This is my list of TXT files: @(XtensaObjFolders)"/>
+	<!--Message Text="display list of obj dirs: @(XtensaObjFolders)"/-->
     <ItemGroup>
       <!--XtensaObjItem Include="$(MSBuildProjectDirectory)\$(OutputFolder)\Obj\%(XtensaArItem.Identity)\*.o"/-->
 	  <XtensaObjItem Include="$(MSBuildProjectDirectory)\$(OutputFolder)\Obj\%(XtensaObjFolders.Identity)*.o"/>
