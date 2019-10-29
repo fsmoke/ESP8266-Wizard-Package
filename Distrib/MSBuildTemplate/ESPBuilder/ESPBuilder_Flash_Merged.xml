@@ -56,7 +56,7 @@
 			<EnumValue Name="2" DisplayName="1024KB [512KB + 512KB]" Description="Total [User1 + User2]" />
 			<EnumValue Name="3" DisplayName="2048KB [512KB + 512KB]" Description="Total [User1 + User2]" />
 			<EnumValue Name="4" DisplayName="4096KB [512KB + 512KB]" Description="Total [User1 + User2]" />
-			  <EnumValue Name="5" DisplayName="2048KB [1024KB + 1024KB]" Description="Total [User1 + User2]" />
+			<EnumValue Name="5" DisplayName="2048KB [1024KB + 1024KB]" Description="Total [User1 + User2]" />
 			<EnumValue Name="6" DisplayName="4096KB [1024KB + 1024KB]" Description="Total [User1 + User2]" />
 		</EnumProperty>
 
