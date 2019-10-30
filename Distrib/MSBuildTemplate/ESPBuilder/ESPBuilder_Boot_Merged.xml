@@ -97,7 +97,9 @@
       <BoolProperty Name="ESPDataLocal" DisplayName="Use Local ESP Init Data" Description="Use ESP Init Data located inside projects folder." Category="ESPToolConfig" />
       <BoolProperty Name="FlashMaster" DisplayName="Flash Master Key" Description="Flash master_device_key.bin" Category="ESPToolConfig" />
       <!--BoolProperty Name="FlashESPData" DisplayName="Flash ESP Init Data" Description="Flash esp_init_data_default.bin" Category="ESPToolConfig" /-->
-		<DynamicEnumProperty Name="FlashESPDataFile" DisplayName="Flash ESP Init Data File" Description="Version of esp_init_data_default.bin" Category="ESPToolConfig">
+		<DynamicEnumProperty Name="FlashESPDataFile" DisplayName="Flash ESP Init Data File" 
+			Description="Version of esp_init_data_default.bin" Category="ESPToolConfig"
+			EnumProvider="ProjectExpression">
 			<DynamicEnumProperty.ProviderSettings>
 				<NameValuePair Name="Include" Value="@(FlashESPDataFileName)" />
 			</DynamicEnumProperty.ProviderSettings>
