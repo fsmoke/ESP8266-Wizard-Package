@@ -4,7 +4,7 @@ Esp8266 visual studio add-in
 Originally forked this add in https://bbs.espressif.com/viewtopic.php?t=3577
 All copyrights saved.
 
-# Fixes and changes in this version
+# Fixes and changes
 
 * Removed VsixInstaller and dependencies from setup script, instead used regkey to determine vs2017 path to run native VsixInstaller
 * Fixed irom flash address for NON-OS SDK 2.X.X(and above) versions (was 40000, must be 10000)
@@ -16,10 +16,8 @@ All copyrights saved.
 * Some terms translated(was in French) to international(English) language
 * Fixed ESP init data for NON-OS SDK 2.2.x and above
 * Fixed rm utility for python scripts
+* Support vs2019
 
 # TODO for future versions
-
 * Add new versions of RTOS SDK
-* Add support vs2019
-* May be return support vs2015
 * Rewrite some code templates to support new mamory map declaration (NON-OS SDK 3.X.X)
