@@ -3,6 +3,9 @@
     <Name>ESP8266Firmware</Name>
     <Description>ESP 8266 SDK Visual Studio Template</Description>
     <ProjectType>VC</ProjectType>
+    <ProjectTypeTag>iot</ProjectTypeTag>
+    <PlatformTag>Xtensa L106</PlatformTag>
+    <LanguageTag>C</LanguageTag>
     <ProjectSubType>
     </ProjectSubType>
     <SortOrder>1000</SortOrder>
