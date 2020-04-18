@@ -20,4 +20,4 @@ All copyrights saved.
 
 # TODO for future versions
 * Add new versions of RTOS SDK
-* Rewrite some code templates to support new mamory map declaration (NON-OS SDK 3.X.X)
+* Rewrite some code templates to support new memory map declaration (NON-OS SDK 3.X.X)
