@@ -30,7 +30,7 @@ WizardSmallImageFile=WIFISmall.bmp
 Name: english; MessagesFile: compiler:Default.isl
 
 [Files]
-//Source: Distrib\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: Distrib\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: Temp\bin\ESP8266Wizard\Release\ESP8266Wizard.vsix; DestDir: {app}; Flags: ignoreversion
 
 [Run]
